@@ -17,24 +17,35 @@ import SearchIcon from '@mui/icons-material/Search';
 
 const DataTable = () => {
     const [data, setData] = useState([]);
+    const [filterData, setFilterData] = useState([]);
 
     const url = ('https://jsonplaceholder.typicode.com/users')
     useEffect(() => {
         fetch(url)
             .then(res => res.json())
-            .then(data => setData(data.slice(5.0)))
+            .then(data => {
+                setData(data.slice(5.0));
+                setFilterData(data)
+            })
     }, [])
 
     const handleMore = () => {
         fetch(url)
             .then(res => res.json())
-            .then(data => setData(data))
+            .then(data => {
+                setData(data);
+                setFilterData(data)
+            })
     }
 
+    const handleFilter = (value) => {
+        const res = filterData.filter(f => f.name.toLowerCase().includes(value));
+        setData(res);
+    }
 
     return (
-        <div className='my-20'>
-            <div>
+        <div className='mt-10 mb-20'>
+            <div className='flex justify-center my-10'>
                 <Paper
                     component="form"
                     sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 400 }}
@@ -42,6 +53,7 @@ const DataTable = () => {
                     <InputBase
                         sx={{ ml: 1, flex: 1 }}
                         placeholder="Search"
+                        onChange={e => handleFilter(e.target.value)}
                         inputProps={{ 'aria-label': 'search' }}
                     />
                     <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
